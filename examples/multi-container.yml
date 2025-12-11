@@ -29,5 +29,8 @@ jobs:
         with:
           kubigo-url: ${{ secrets.KUBIGO_URL }}
           api-key: ${{ secrets.KUBIGO_API_KEY }}
-          # Multiple images separated by commas
-          image-tags: myrepo/frontend:${{ github.sha }}, myrepo/backend:${{ github.sha }}, myrepo/worker:${{ github.sha }}
+          # Multiple images using YAML multiline (cleaner!)
+          image-tags: |
+            myrepo/frontend:${{ github.sha }}
+            myrepo/backend:${{ github.sha }}
+            myrepo/worker:${{ github.sha }}

@@ -7,9 +7,19 @@ async function run() {
     // Get inputs
     const kubigoUrl = core.getInput('kubigo-url', { required: true });
     const apiKey = core.getInput('api-key', { required: true });
-    const imageTags = core.getInput('image-tags', { required: true });
+    const imageTagsInput = core.getInput('image-tags', { required: true });
     const serviceId = core.getInput('service-id');
     const triggeredBy = core.getInput('triggered-by') || 'github-actions';
+    
+    // Parse image tags - supports both comma-separated and newline-separated
+    const imageTags = imageTagsInput
+      .split(/[\n,]/)  // Split by newline or comma
+      .map(tag => tag.trim())
+      .filter(tag => tag.length > 0);  // Remove empty lines
+    
+    if (imageTags.length === 0) {
+      throw new Error('At least one image tag must be provided');
+    }
     
     // Auto-detect from GitHub context or use provided values
     const repositoryUrl = core.getInput('repository-url') || 
@@ -23,7 +33,7 @@ async function run() {
       repositoryUrl,
       branch,
       commitSha,
-      imageTags: imageTags.split(',').map(tag => tag.trim()),
+      imageTags: imageTags,
       triggeredBy,
       metadata: {
         buildNumber: github.context.runNumber.toString(),
@@ -42,7 +52,8 @@ async function run() {
     }
 
     core.info(`🚀 Creating releases for ${repositoryUrl}/${branch}`);
-    core.info(`📦 Images: ${imageTags}`);
+    core.info(`📦 Images (${imageTags.length}):`);
+    imageTags.forEach(tag => core.info(`   - ${tag}`));
     core.info(`📝 Commit: ${commitSha.substring(0, 7)}`);
     core.debug(`Full payload: ${JSON.stringify(payload, null, 2)}`);
 

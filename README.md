@@ -58,7 +58,7 @@ jobs:
 |-------|----------|---------|-------------|
 | `kubigo-url` | ✅ Yes | - | Kubigo URL (e.g., `https://api.kubigo.com`) |
 | `api-key` | ✅ Yes | - | Kubigo API Key (store in GitHub Secrets) |
-| `image-tags` | ✅ Yes | - | Docker image tags (comma-separated for multi-container) |
+| `image-tags` | ✅ Yes | - | Docker image tags (comma or newline-separated) |
 | `service-id` | ❌ No | - | Specific service ID (overrides repository matching) |
 | `triggered-by` | ❌ No | `github-actions` | Who/what triggered this release |
 | `repository-url` | ❌ No | Auto-detected | Repository URL |
@@ -105,14 +105,30 @@ jobs:
     
     docker build -t myrepo/backend:${{ github.sha }} ./backend
     docker push myrepo/backend:${{ github.sha }}
+    
+    docker build -t myrepo/worker:${{ github.sha }} ./worker
+    docker push myrepo/worker:${{ github.sha }}
 
 - name: Create Release
   uses: kubigo/release@v1
   with:
     kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    # Multiple images separated by commas
-    image-tags: myrepo/frontend:${{ github.sha }}, myrepo/backend:${{ github.sha }}
+    # Multiple images using YAML multiline (cleaner!)
+    image-tags: |
+      myrepo/frontend:${{ github.sha }}
+      myrepo/backend:${{ github.sha }}
+      myrepo/worker:${{ github.sha }}
+```
+
+**Alternative (comma-separated):**
+```yaml
+- name: Create Release
+  uses: kubigo/release@v1
+  with:
+    kubigo-url: ${{ secrets.KUBIGO_URL }}
+    api-key: ${{ secrets.KUBIGO_API_KEY }}
+    image-tags: myrepo/frontend:${{ github.sha }}, myrepo/backend:${{ github.sha }}, myrepo/worker:${{ github.sha }}
 ```
 
 ### With Specific Service ID
