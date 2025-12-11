@@ -51,7 +51,7 @@ jobs:
         with:
           kubigo-url: ${{ secrets.KUBIGO_URL }}
           api-key: ${{ secrets.KUBIGO_API_KEY }}
-          image-tags: myrepo/myapp:${{ github.sha }}
+          images: myrepo/myapp:${{ github.sha }}
 ```
 
 ## 4️⃣ Push and Watch! 🎉

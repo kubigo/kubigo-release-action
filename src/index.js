@@ -7,18 +7,18 @@ async function run() {
     // Get inputs
     const kubigoUrl = core.getInput('kubigo-url', { required: true });
     const apiKey = core.getInput('api-key', { required: true });
-    const imageTagsInput = core.getInput('image-tags', { required: true });
+    const imagesInput = core.getInput('images', { required: true });
     const serviceId = core.getInput('service-id');
     const triggeredBy = core.getInput('triggered-by') || 'github-actions';
     
-    // Parse image tags - supports both comma-separated and newline-separated
-    const imageTags = imageTagsInput
+    // Parse images - supports both comma-separated and newline-separated
+    const imageTags = imagesInput
       .split(/[\n,]/)  // Split by newline or comma
       .map(tag => tag.trim())
       .filter(tag => tag.length > 0);  // Remove empty lines
     
     if (imageTags.length === 0) {
-      throw new Error('At least one image tag must be provided');
+      throw new Error('At least one image must be provided');
     }
     
     // Auto-detect from GitHub context or use provided values

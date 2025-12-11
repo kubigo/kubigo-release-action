@@ -12,8 +12,8 @@ inputs:
   api-key:
     description: 'Kubigo API Key (store in secrets)'
     required: true
-  image-tags:
-    description: 'Docker image tags to deploy (comma-separated or newline-separated for multiple containers)'
+  images:
+    description: 'Docker images to deploy (comma-separated or newline-separated for multiple containers)'
     required: true
   service-id:
     description: 'Optional: Specific service ID (overrides repo matching)'

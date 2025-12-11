@@ -49,7 +49,7 @@ jobs:
         with:
           kubigo-url: ${{ secrets.KUBIGO_URL }}
           api-key: ${{ secrets.KUBIGO_API_KEY }}
-          image-tags: myrepo/myapp:${{ github.sha }}
+          images: myrepo/myapp:${{ github.sha }}
 ```
 
 ## 📖 Inputs
@@ -58,7 +58,7 @@ jobs:
 |-------|----------|---------|-------------|
 | `kubigo-url` | ✅ Yes | - | Kubigo URL (e.g., `https://api.kubigo.com`) |
 | `api-key` | ✅ Yes | - | Kubigo API Key (store in GitHub Secrets) |
-| `image-tags` | ✅ Yes | - | Docker image tags (comma or newline-separated) |
+| `images` | ✅ Yes | - | Docker images (comma or newline-separated) |
 | `service-id` | ❌ No | - | Specific service ID (overrides repository matching) |
 | `triggered-by` | ❌ No | `github-actions` | Who/what triggered this release |
 | `repository-url` | ❌ No | Auto-detected | Repository URL |
@@ -86,7 +86,7 @@ jobs:
   with:
     kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    image-tags: myrepo/myapp:${{ github.sha }}
+    images: myrepo/myapp:${{ github.sha }}
 
 - name: Check Results
   run: |
@@ -115,7 +115,7 @@ jobs:
     kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
     # Multiple images using YAML multiline (cleaner!)
-    image-tags: |
+    images: |
       myrepo/frontend:${{ github.sha }}
       myrepo/backend:${{ github.sha }}
       myrepo/worker:${{ github.sha }}
@@ -128,7 +128,7 @@ jobs:
   with:
     kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    image-tags: myrepo/frontend:${{ github.sha }}, myrepo/backend:${{ github.sha }}, myrepo/worker:${{ github.sha }}
+    images: myrepo/frontend:${{ github.sha }}, myrepo/backend:${{ github.sha }}, myrepo/worker:${{ github.sha }}
 ```
 
 ### With Specific Service ID
@@ -139,7 +139,7 @@ jobs:
   with:
     kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    image-tags: myrepo/myapp:${{ github.sha }}
+    images: myrepo/myapp:${{ github.sha }}
     service-id: '123e4567-e89b-12d3-a456-426614174000'
 ```
 
@@ -156,7 +156,7 @@ jobs:
   with:
     kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    image-tags: myrepo/myapp:${{ github.sha }}
+    images: myrepo/myapp:${{ github.sha }}
   # This will create releases for ALL configured targets:
   # - Development (auto-deploys)
   # - Staging (requires approval)
@@ -171,7 +171,7 @@ jobs:
   with:
     kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    image-tags: myrepo/myapp:${{ github.sha }}
+    images: myrepo/myapp:${{ github.sha }}
     triggered-by: ${{ github.actor }}
 ```
 
@@ -184,7 +184,7 @@ jobs:
   with:
     kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    image-tags: myrepo/myapp:${{ github.sha }}
+    images: myrepo/myapp:${{ github.sha }}
 ```
 
 ## 🔧 Setup Guide
@@ -283,7 +283,7 @@ Add this to your workflow for detailed logs:
   with:
     kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    image-tags: myrepo/myapp:${{ github.sha }}
+    images: myrepo/myapp:${{ github.sha }}
   env:
     ACTIONS_STEP_DEBUG: true
 ```
