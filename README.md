@@ -27,7 +27,7 @@ Automatically create releases in Kubigo after successful builds. This action int
 ### Basic Usage
 
 ```yaml
-name: Deploy
+name: Deploy to Kubigo
 
 on:
   push:
@@ -47,19 +47,21 @@ jobs:
       - name: Create Release in Kubigo
         uses: kubigo/release@v1
         with:
-          kubigo-url: ${{ secrets.KUBIGO_URL }}
           api-key: ${{ secrets.KUBIGO_API_KEY }}
           images: myrepo/myapp:${{ github.sha }}
 ```
+
+**That's it!** Just `api-key` and `images` - the URL defaults to `https://api.kubigo.com`.
 
 ## 📖 Inputs
 
 | Input | Required | Default | Description |
 |-------|----------|---------|-------------|
-| `kubigo-url` | ✅ Yes | - | Kubigo URL (e.g., `https://api.kubigo.com`) |
 | `api-key` | ✅ Yes | - | Kubigo API Key (store in GitHub Secrets) |
 | `images` | ✅ Yes | - | Docker images (comma or newline-separated) |
-| `service-id` | ❌ No | - | Specific service ID (overrides repository matching) |
+| `target` | ❌ No | All targets | Specific target environment (e.g., `development`, `staging`, `production`) |
+| `kubigo-url` | ❌ No | `https://api.kubigo.com` | Kubigo API URL (only needed for self-hosted) |
+| `service-id` | ❌ No | Auto-matched | Specific service ID (overrides repository matching) |
 | `triggered-by` | ❌ No | `github-actions` | Who/what triggered this release |
 | `repository-url` | ❌ No | Auto-detected | Repository URL |
 | `branch` | ❌ No | Auto-detected | Git branch name |
@@ -175,6 +177,17 @@ jobs:
     triggered-by: ${{ github.actor }}
 ```
 
+### Deploy to Specific Target
+
+```yaml
+- name: Deploy to Staging Only
+  uses: kubigo/release@v1
+  with:
+    api-key: ${{ secrets.KUBIGO_API_KEY }}
+    images: myrepo/myapp:${{ github.sha }}
+    target: staging  # Only creates release for staging environment
+```
+
 ### Conditional Deployment
 
 ```yaml
@@ -182,9 +195,9 @@ jobs:
   if: github.ref == 'refs/heads/main'
   uses: kubigo/release@v1
   with:
-    kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
     images: myrepo/myapp:${{ github.sha }}
+    target: production
 ```
 
 ## 🔧 Setup Guide
@@ -197,14 +210,16 @@ jobs:
 4. Give it a descriptive name (e.g., "GitHub Actions - MyApp")
 5. **Copy the key immediately** - it won't be shown again!
 
-### 2. Add Secrets to GitHub
+### 2. Add Secret to GitHub
 
 1. Go to your repository on GitHub
 2. Navigate to **Settings → Secrets and variables → Actions**
 3. Click **"New repository secret"**
-4. Add two secrets:
-   - `KUBIGO_URL`: Your Kubigo URL (e.g., `https://api.kubigo.com`)
-   - `KUBIGO_API_KEY`: The API key you generated
+4. Add secret:
+   - **Name**: `KUBIGO_API_KEY`
+   - **Value**: The API key you generated
+
+**Note**: No need to add `KUBIGO_URL` - it defaults to `https://api.kubigo.com`!
 
 ### 3. Configure Service in Kubigo
 

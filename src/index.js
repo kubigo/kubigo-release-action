@@ -5,9 +5,10 @@ const axios = require('axios');
 async function run() {
   try {
     // Get inputs
-    const kubigoUrl = core.getInput('kubigo-url', { required: true });
     const apiKey = core.getInput('api-key', { required: true });
     const imagesInput = core.getInput('images', { required: true });
+    const kubigoUrl = core.getInput('kubigo-url') || 'https://api.kubigo.com';
+    const target = core.getInput('target');
     const serviceId = core.getInput('service-id');
     const triggeredBy = core.getInput('triggered-by') || 'github-actions';
     
@@ -51,9 +52,16 @@ async function run() {
       payload.serviceId = serviceId;
     }
 
+    if (target) {
+      payload.target = target;
+    }
+
     core.info(`🚀 Creating releases for ${repositoryUrl}/${branch}`);
     core.info(`📦 Images (${imageTags.length}):`);
     imageTags.forEach(tag => core.info(`   - ${tag}`));
+    if (target) {
+      core.info(`🎯 Target: ${target}`);
+    }
     core.info(`📝 Commit: ${commitSha.substring(0, 7)}`);
     core.debug(`Full payload: ${JSON.stringify(payload, null, 2)}`);
 
