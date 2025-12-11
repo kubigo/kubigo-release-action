@@ -1,9 +1,9 @@
 # Kubigo Release Action
 
-[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Kubigo%20Release%20Action-blue.svg?colorA=24292e&colorB=0366d6&style=flat&longCache=true&logo=github)](https://github.com/marketplace/actions/kubigo-release-action)
+[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Kubigo%20Release-blue.svg?colorA=24292e&colorB=0366d6&style=flat&longCache=true&logo=github)](https://github.com/marketplace/actions/kubigo-release)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Automatically create releases in Kubigo after successful builds. This action integrates seamlessly with your CI/CD pipeline to deploy to multiple environments with approval workflows.
+Automatically create releases in Kubigo after successful builds. This action integrates seamlessly with your CI/CD pipeline to deploy to multiple environments with approval workflows. Supports multi-container deployments.
 
 ## ✨ Features
 
@@ -13,6 +13,7 @@ Automatically create releases in Kubigo after successful builds. This action int
 - 🔒 **Secure** API key authentication
 - 📝 **Detailed logging** with release status
 - 🎯 **Multi-environment** support (dev, staging, production)
+- 🐳 **Multi-container** support for microservices
 - ⚡ **Fast** - typically completes in < 2 seconds
 
 ## 🚀 Quick Start
@@ -44,20 +45,20 @@ jobs:
           docker push myrepo/myapp:${{ github.sha }}
       
       - name: Create Release in Kubigo
-        uses: kubigo/kubigo-release-action@v1
+        uses: kubigo/release@v1
         with:
-          api-url: ${{ secrets.KUBIGO_API_URL }}
+          kubigo-url: ${{ secrets.KUBIGO_URL }}
           api-key: ${{ secrets.KUBIGO_API_KEY }}
-          image-tag: myrepo/myapp:${{ github.sha }}
+          image-tags: myrepo/myapp:${{ github.sha }}
 ```
 
 ## 📖 Inputs
 
 | Input | Required | Default | Description |
 |-------|----------|---------|-------------|
-| `api-url` | ✅ Yes | - | Kubigo API URL (e.g., `https://api.kubigo.com`) |
+| `kubigo-url` | ✅ Yes | - | Kubigo URL (e.g., `https://api.kubigo.com`) |
 | `api-key` | ✅ Yes | - | Kubigo API Key (store in GitHub Secrets) |
-| `image-tag` | ✅ Yes | - | Docker image tag to deploy |
+| `image-tags` | ✅ Yes | - | Docker image tags (comma-separated for multi-container) |
 | `service-id` | ❌ No | - | Specific service ID (overrides repository matching) |
 | `triggered-by` | ❌ No | `github-actions` | Who/what triggered this release |
 | `repository-url` | ❌ No | Auto-detected | Repository URL |
@@ -81,11 +82,11 @@ jobs:
 ```yaml
 - name: Create Release in Kubigo
   id: kubigo
-  uses: kubigo/kubigo-release-action@v1
+  uses: kubigo/release@v1
   with:
-    api-url: ${{ secrets.KUBIGO_API_URL }}
+    kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    image-tag: myrepo/myapp:${{ github.sha }}
+    image-tags: myrepo/myapp:${{ github.sha }}
 
 - name: Check Results
   run: |
@@ -94,15 +95,35 @@ jobs:
     echo "📦 Service: ${{ steps.kubigo.outputs.service-name }}"
 ```
 
+### Multi-Container Deployment
+
+```yaml
+- name: Build and Push Multiple Images
+  run: |
+    docker build -t myrepo/frontend:${{ github.sha }} ./frontend
+    docker push myrepo/frontend:${{ github.sha }}
+    
+    docker build -t myrepo/backend:${{ github.sha }} ./backend
+    docker push myrepo/backend:${{ github.sha }}
+
+- name: Create Release
+  uses: kubigo/release@v1
+  with:
+    kubigo-url: ${{ secrets.KUBIGO_URL }}
+    api-key: ${{ secrets.KUBIGO_API_KEY }}
+    # Multiple images separated by commas
+    image-tags: myrepo/frontend:${{ github.sha }}, myrepo/backend:${{ github.sha }}
+```
+
 ### With Specific Service ID
 
 ```yaml
 - name: Create Release in Kubigo
-  uses: kubigo/kubigo-release-action@v1
+  uses: kubigo/release@v1
   with:
-    api-url: ${{ secrets.KUBIGO_API_URL }}
+    kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    image-tag: myrepo/myapp:${{ github.sha }}
+    image-tags: myrepo/myapp:${{ github.sha }}
     service-id: '123e4567-e89b-12d3-a456-426614174000'
 ```
 
@@ -115,11 +136,11 @@ jobs:
     docker push myrepo/myapp:${{ github.sha }}
 
 - name: Create Releases
-  uses: kubigo/kubigo-release-action@v1
+  uses: kubigo/release@v1
   with:
-    api-url: ${{ secrets.KUBIGO_API_URL }}
+    kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    image-tag: myrepo/myapp:${{ github.sha }}
+    image-tags: myrepo/myapp:${{ github.sha }}
   # This will create releases for ALL configured targets:
   # - Development (auto-deploys)
   # - Staging (requires approval)
@@ -130,11 +151,11 @@ jobs:
 
 ```yaml
 - name: Create Release
-  uses: kubigo/kubigo-release-action@v1
+  uses: kubigo/release@v1
   with:
-    api-url: ${{ secrets.KUBIGO_API_URL }}
+    kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    image-tag: myrepo/myapp:${{ github.sha }}
+    image-tags: myrepo/myapp:${{ github.sha }}
     triggered-by: ${{ github.actor }}
 ```
 
@@ -143,11 +164,11 @@ jobs:
 ```yaml
 - name: Create Release (Production Only)
   if: github.ref == 'refs/heads/main'
-  uses: kubigo/kubigo-release-action@v1
+  uses: kubigo/release@v1
   with:
-    api-url: ${{ secrets.KUBIGO_API_URL }}
+    kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    image-tag: myrepo/myapp:${{ github.sha }}
+    image-tags: myrepo/myapp:${{ github.sha }}
 ```
 
 ## 🔧 Setup Guide
@@ -166,7 +187,7 @@ jobs:
 2. Navigate to **Settings → Secrets and variables → Actions**
 3. Click **"New repository secret"**
 4. Add two secrets:
-   - `KUBIGO_API_URL`: Your Kubigo API URL (e.g., `https://api.kubigo.com`)
+   - `KUBIGO_URL`: Your Kubigo URL (e.g., `https://api.kubigo.com`)
    - `KUBIGO_API_KEY`: The API key you generated
 
 ### 3. Configure Service in Kubigo
@@ -232,7 +253,7 @@ Create `.github/workflows/deploy.yml` in your repository with the example above.
 - Ensure service is active in Kubigo
 
 ### "Network error"
-- Check `api-url` is correct
+- Check `kubigo-url` is correct
 - Verify Kubigo API is accessible
 - Check for firewall/proxy issues
 
@@ -242,20 +263,23 @@ Add this to your workflow for detailed logs:
 
 ```yaml
 - name: Create Release in Kubigo
-  uses: kubigo/kubigo-release-action@v1
+  uses: kubigo/release@v1
   with:
-    api-url: ${{ secrets.KUBIGO_API_URL }}
+    kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    image-tag: myrepo/myapp:${{ github.sha }}
+    image-tags: myrepo/myapp:${{ github.sha }}
   env:
     ACTIONS_STEP_DEBUG: true
 ```
 
 ## 🔗 Related Actions
 
-- [kubigo-deploy-action](https://github.com/kubigo/kubigo-deploy-action) - Deploy a specific release
-- [kubigo-approve-action](https://github.com/kubigo/kubigo-approve-action) - Approve pending releases
-- [kubigo-rollback-action](https://github.com/kubigo/kubigo-rollback-action) - Rollback to previous release
+This repository includes multiple actions:
+
+- **Main Action** (`kubigo/release@v1`) - Create releases from CI/CD
+- **Deploy Action** (`kubigo/release/deploy@v1`) - Deploy a specific release
+- **Approve Action** (`kubigo/release/approve@v1`) - Approve pending releases
+- **Rollback Action** (`kubigo/release/rollback@v1`) - Rollback to previous release
 
 ## 📝 License
 
@@ -270,7 +294,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - 📧 Email: support@kubigo.com
 - 💬 Discord: [Join our community](https://discord.gg/kubigo)
 - 📚 Docs: [docs.kubigo.com](https://docs.kubigo.com)
-- 🐛 Issues: [GitHub Issues](https://github.com/kubigo/kubigo-release-action/issues)
+- 🐛 Issues: [GitHub Issues](https://github.com/kubigo/release/issues)
 
 ## ⭐ Show Your Support
 

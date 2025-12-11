@@ -6,14 +6,14 @@ branding:
   color: 'blue'
 
 inputs:
-  api-url:
-    description: 'Kubigo API URL (e.g., https://api.kubigo.com)'
+  kubigo-url:
+    description: 'Kubigo URL (e.g., https://api.kubigo.com)'
     required: true
   api-key:
     description: 'Kubigo API Key (store in secrets)'
     required: true
-  image-tag:
-    description: 'Docker image tag to deploy'
+  image-tags:
+    description: 'Docker image tags to deploy (comma-separated for multiple containers)'
     required: true
   service-id:
     description: 'Optional: Specific service ID (overrides repo matching)'

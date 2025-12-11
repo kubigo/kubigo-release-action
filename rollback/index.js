@@ -4,7 +4,7 @@ const axios = require('axios');
 async function run() {
   try {
     // Get inputs
-    const apiUrl = core.getInput('api-url', { required: true });
+    const kubigoUrl = core.getInput('kubigo-url', { required: true });
     const apiKey = core.getInput('api-key', { required: true });
     const targetId = core.getInput('target-id', { required: true });
     const reason = core.getInput('reason') || 'Rollback initiated from GitHub Actions';
@@ -18,7 +18,7 @@ async function run() {
 
     // Call rollback endpoint
     const response = await axios.post(
-      `${apiUrl}/api/v2/release-management/releases/${targetId}/rollback`,
+      `${kubigoUrl}/api/v2/release-management/releases/${targetId}/rollback`,
       payload,
       {
         headers: {

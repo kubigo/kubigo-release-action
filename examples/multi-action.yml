@@ -19,11 +19,11 @@ jobs:
       
       - name: Create Release
         id: create-release
-        uses: kubigo/kubigo-release-action@v1
+        uses: kubigo/release@v1
         with:
-          api-url: ${{ secrets.KUBIGO_API_URL }}
+          kubigo-url: ${{ secrets.KUBIGO_URL }}
           api-key: ${{ secrets.KUBIGO_API_KEY }}
-          image-tag: myrepo/myapp:${{ github.sha }}
+          image-tags: myrepo/myapp:${{ github.sha }}
 
   approve-staging:
     needs: build-and-release
@@ -31,9 +31,9 @@ jobs:
     environment: staging
     steps:
       - name: Approve Staging Release
-        uses: kubigo/kubigo-release-action/approve@v1
+        uses: kubigo/release/approve@v1
         with:
-          api-url: ${{ secrets.KUBIGO_API_URL }}
+          kubigo-url: ${{ secrets.KUBIGO_URL }}
           api-key: ${{ secrets.KUBIGO_API_KEY }}
           release-id: ${{ needs.build-and-release.outputs.release-id }}
           comment: 'Approved by GitHub Actions'
@@ -43,8 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Staging
-        uses: kubigo/kubigo-release-action/deploy@v1
+        uses: kubigo/release/deploy@v1
         with:
-          api-url: ${{ secrets.KUBIGO_API_URL }}
+          kubigo-url: ${{ secrets.KUBIGO_URL }}
           api-key: ${{ secrets.KUBIGO_API_KEY }}
           release-id: ${{ needs.build-and-release.outputs.release-id }}

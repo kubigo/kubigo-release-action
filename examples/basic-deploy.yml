@@ -16,8 +16,8 @@ jobs:
           docker push myrepo/myapp:${{ github.sha }}
       
       - name: Create Release in Kubigo
-        uses: kubigo/kubigo-release-action@v1
+        uses: kubigo/release@v1
         with:
-          api-url: ${{ secrets.KUBIGO_API_URL }}
+          kubigo-url: ${{ secrets.KUBIGO_URL }}
           api-key: ${{ secrets.KUBIGO_API_KEY }}
-          image-tag: myrepo/myapp:${{ github.sha }}
+          image-tags: myrepo/myapp:${{ github.sha }}

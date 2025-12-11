@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Rollback Release
-        uses: kubigo/kubigo-release-action/rollback@v1
+        uses: kubigo/release/rollback@v1
         with:
-          api-url: ${{ secrets.KUBIGO_API_URL }}
+          kubigo-url: ${{ secrets.KUBIGO_URL }}
           api-key: ${{ secrets.KUBIGO_API_KEY }}
           target-id: ${{ github.event.inputs.target-id }}
           reason: ${{ github.event.inputs.reason }}

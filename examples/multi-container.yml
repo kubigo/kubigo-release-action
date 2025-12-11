@@ -1,0 +1,33 @@
+name: Multi-Container Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build and Push Multiple Images
+        run: |
+          # Build frontend
+          docker build -t myrepo/frontend:${{ github.sha }} ./frontend
+          docker push myrepo/frontend:${{ github.sha }}
+          
+          # Build backend
+          docker build -t myrepo/backend:${{ github.sha }} ./backend
+          docker push myrepo/backend:${{ github.sha }}
+          
+          # Build worker
+          docker build -t myrepo/worker:${{ github.sha }} ./worker
+          docker push myrepo/worker:${{ github.sha }}
+      
+      - name: Create Release in Kubigo
+        uses: kubigo/release@v1
+        with:
+          kubigo-url: ${{ secrets.KUBIGO_URL }}
+          api-key: ${{ secrets.KUBIGO_API_KEY }}
+          # Multiple images separated by commas
+          image-tags: myrepo/frontend:${{ github.sha }}, myrepo/backend:${{ github.sha }}, myrepo/worker:${{ github.sha }}

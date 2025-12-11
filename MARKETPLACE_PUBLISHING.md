@@ -2,19 +2,20 @@
 
 ## ✅ Prerequisites Completed
 
-- [x] Repository created: `kubigo/kubigo-release-action`
+- [x] Repository created: `kubigo/release`
 - [x] Action files created (`action.yml`, `src/index.js`)
 - [x] Built and compiled (`dist/index.js`)
 - [x] README with comprehensive documentation
 - [x] Examples provided
 - [x] Tagged with `v1.0.0` and `v1`
 - [x] Sub-actions created (deploy, approve, rollback)
+- [x] Multi-container support added
 
 ## 📋 Steps to Publish to Marketplace
 
 ### 1. Create a Release on GitHub
 
-1. Go to https://github.com/kubigo/kubigo-release-action/releases
+1. Go to https://github.com/kubigo/release/releases
 2. Click **"Draft a new release"**
 3. Fill in the details:
    - **Tag**: `v1.0.0` (already created)
@@ -44,16 +45,16 @@ Kubigo Release Action allows you to automatically create releases in Kubigo afte
 ### 🚀 Quick Start
 
 ```yaml
-- uses: kubigo/kubigo-release-action@v1
+- uses: kubigo/release@v1
   with:
-    api-url: ${{ secrets.KUBIGO_API_URL }}
+    kubigo-url: ${{ secrets.KUBIGO_URL }}
     api-key: ${{ secrets.KUBIGO_API_KEY }}
-    image-tag: myrepo/myapp:${{ github.sha }}
+    image-tags: myrepo/myapp:${{ github.sha }}
 ```
 
 ### 📚 Documentation
 
-See [README.md](https://github.com/kubigo/kubigo-release-action#readme) for full documentation.
+See [README.md](https://github.com/kubigo/release#readme) for full documentation.
 ```
 
 4. Check **"Set as the latest release"**
@@ -93,7 +94,7 @@ Automatically create and deploy Kubernetes releases with approval workflows
 
 ### 3. Verify Marketplace Listing
 
-1. Visit: https://github.com/marketplace/actions/kubigo-release-action
+1. Visit: https://github.com/marketplace/actions/kubigo-release
 2. Verify all information is correct
 3. Check that examples render properly
 
@@ -132,7 +133,7 @@ Consider adding screenshots to README:
 ### Monitor Usage
 
 1. Check marketplace analytics:
-   - https://github.com/kubigo/kubigo-release-action/insights/traffic
+   - https://github.com/kubigo/release/insights/traffic
 2. Monitor issues and discussions
 3. Respond to user feedback
 

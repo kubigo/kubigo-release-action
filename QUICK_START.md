@@ -19,7 +19,7 @@ Get up and running with Kubigo Release Action in 5 minutes! ⚡
 
 | Name | Value |
 |------|-------|
-| `KUBIGO_API_URL` | `https://api.kubigo.com` (or your instance URL) |
+| `KUBIGO_URL` | `https://api.kubigo.com` (or your instance URL) |
 | `KUBIGO_API_KEY` | The key you copied above |
 
 ## 3️⃣ Create Workflow (2 min)
@@ -47,11 +47,11 @@ jobs:
       
       # Add this step
       - name: Create Release in Kubigo
-        uses: kubigo/kubigo-release-action@v1
+        uses: kubigo/release@v1
         with:
-          api-url: ${{ secrets.KUBIGO_API_URL }}
+          kubigo-url: ${{ secrets.KUBIGO_URL }}
           api-key: ${{ secrets.KUBIGO_API_KEY }}
-          image-tag: myrepo/myapp:${{ github.sha }}
+          image-tags: myrepo/myapp:${{ github.sha }}
 ```
 
 ## 4️⃣ Push and Watch! 🎉
@@ -80,7 +80,7 @@ When you push code:
 ## Need Help?
 
 - 📚 [Full Documentation](README.md)
-- 🐛 [Report Issues](https://github.com/kubigo/kubigo-release-action/issues)
+- 🐛 [Report Issues](https://github.com/kubigo/release/issues)
 - 💬 [Get Support](mailto:support@kubigo.com)
 
 ---

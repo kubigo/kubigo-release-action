@@ -5,9 +5,9 @@ const axios = require('axios');
 async function run() {
   try {
     // Get inputs
-    const apiUrl = core.getInput('api-url', { required: true });
+    const kubigoUrl = core.getInput('kubigo-url', { required: true });
     const apiKey = core.getInput('api-key', { required: true });
-    const imageTag = core.getInput('image-tag', { required: true });
+    const imageTags = core.getInput('image-tags', { required: true });
     const serviceId = core.getInput('service-id');
     const triggeredBy = core.getInput('triggered-by') || 'github-actions';
     
@@ -23,7 +23,7 @@ async function run() {
       repositoryUrl,
       branch,
       commitSha,
-      imageTag,
+      imageTags: imageTags.split(',').map(tag => tag.trim()),
       triggeredBy,
       metadata: {
         buildNumber: github.context.runNumber.toString(),
@@ -42,13 +42,13 @@ async function run() {
     }
 
     core.info(`🚀 Creating releases for ${repositoryUrl}/${branch}`);
-    core.info(`📦 Image: ${imageTag}`);
+    core.info(`📦 Images: ${imageTags}`);
     core.info(`📝 Commit: ${commitSha.substring(0, 7)}`);
     core.debug(`Full payload: ${JSON.stringify(payload, null, 2)}`);
 
     // Call webhook
     const response = await axios.post(
-      `${apiUrl}/api/v2/release-management/releases/webhook`,
+      `${kubigoUrl}/api/v2/release-management/releases/webhook`,
       payload,
       {
         headers: {
@@ -109,7 +109,7 @@ async function run() {
       core.debug(`Response status: ${status}`);
       core.debug(`Response data: ${JSON.stringify(data, null, 2)}`);
     } else if (error.request) {
-      core.setFailed(`❌ Network error: Could not reach Kubigo API at ${core.getInput('api-url')}`);
+      core.setFailed(`❌ Network error: Could not reach Kubigo API at ${core.getInput('kubigo-url')}`);
       core.debug(`Request error: ${error.message}`);
     } else {
       core.setFailed(`❌ Error: ${error.message}`);

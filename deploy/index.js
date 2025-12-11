@@ -4,7 +4,7 @@ const axios = require('axios');
 async function run() {
   try {
     // Get inputs
-    const apiUrl = core.getInput('api-url', { required: true });
+    const kubigoUrl = core.getInput('kubigo-url', { required: true });
     const apiKey = core.getInput('api-key', { required: true });
     const releaseId = core.getInput('release-id', { required: true });
 
@@ -12,7 +12,7 @@ async function run() {
 
     // Call deploy endpoint
     const response = await axios.post(
-      `${apiUrl}/api/v2/release-management/releases/${releaseId}/deploy`,
+      `${kubigoUrl}/api/v2/release-management/releases/${releaseId}/deploy`,
       {},
       {
         headers: {
