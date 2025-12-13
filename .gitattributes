@@ -1,0 +1,10 @@
+# Ensure consistent line endings
+* text=auto eol=lf
+
+# Explicitly set line endings for dist files
+dist/** text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.gif binary
