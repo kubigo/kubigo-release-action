@@ -41714,7 +41714,7 @@ async function run() {
     const apiKey = core.getInput('api-key', { required: true });
     const service = core.getInput('service', { required: true });
     const imagesInput = core.getInput('images', { required: true });
-    const kubigoUrl = core.getInput('kubigo-url') || 'https://api.kubigo.com';
+    const kubigoUrl = core.getInput('kubigo-url') || 'https://app.kubigo.cloud';
     const target = core.getInput('target');
     const triggeredBy = core.getInput('triggered-by') || 'github-actions';
     
